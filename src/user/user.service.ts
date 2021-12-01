@@ -1,48 +1,53 @@
 import { HttpException, Injectable } from '@nestjs/common';
-import { USERS } from './user.mock';
+import { InjectRepository } from '@nestjs/typeorm';
+import { CreateUserDto } from './create-user.dto';
+import { Repository } from 'typeorm';
+import { UserEntity } from './entity/user.entity';
 
 @Injectable()
 export class UserService {
-  users = USERS;
+  constructor(
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>
+  ){}
 
   getUsers(): Promise<any>{
     return new Promise(resolve => {
-      resolve(this.users);
+      resolve(this.userRepository.find());
     })
   }
 
   getUser(userId): Promise<any>{
     let id = Number(userId)
     return new Promise(resolve => {
-      const userCheck = this.users.find(u => u.id === id);
+      const userCheck = this.userRepository.findOne(id);
       if(!userCheck){
         throw new HttpException("User not exist", 404);
       }
-      resolve(userCheck);
+      resolve(this.userRepository.find());
     })
   }
 
   addUser(user): Promise<any> {
     return new Promise(resolve => {
-      if(!this.users.find(u => u.id === user.id)){
-        this.users.push(user);
+      if(!this.userRepository.findOne(user.id)){
+        this.userRepository.save(user);
       }
-      resolve(this.users);
+      resolve(this.userRepository.find());
     })
   }
 
   deleteUser(userId): Promise<any>{
     let id = Number(userId);
     return new Promise(resolve => {
-      const userCheckIndex = this.users.findIndex(u => u.id === id);
-      if(userCheckIndex === -1){
+      const userCheck = this.userRepository.findOne(id);
+      if(!userCheck){
         throw new HttpException('user not exist', 404);
       }
-
-      this.users.splice(userCheckIndex, 1);
-      resolve(this.users);
+      //this.userRepository.delete(userCheck.id);
+      resolve(this.userRepository.find());
     })
   }
 
-
 }
+
