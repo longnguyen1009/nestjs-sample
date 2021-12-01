@@ -24,15 +24,13 @@ export class UserService {
       if(!userCheck){
         throw new HttpException("User not exist", 404);
       }
-      resolve(this.userRepository.find());
+      resolve(userCheck);
     })
   }
 
   addUser(user): Promise<any> {
     return new Promise(resolve => {
-      if(!this.userRepository.findOne(user.id)){
-        this.userRepository.save(user);
-      }
+      this.userRepository.save(user);
       resolve(this.userRepository.find());
     })
   }
@@ -44,7 +42,7 @@ export class UserService {
       if(!userCheck){
         throw new HttpException('user not exist', 404);
       }
-      //this.userRepository.delete(userCheck.id);
+      this.userRepository.delete(userId);
       resolve(this.userRepository.find());
     })
   }
