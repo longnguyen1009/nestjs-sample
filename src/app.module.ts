@@ -9,22 +9,7 @@ import { UserModule } from './user/user.module';
   imports: [
     UserModule,
     ConfigModule.forRoot(),
-    TypeOrmModule.forRoot({
-      name: "default",
-      url: process.env.DATABASE_URL,
-      type: 'postgres',
-      port: 5432,
-      host: process.env.DATABASE_HOST,
-      username: process.env.DATABASE_USERNAME,
-      password: process.env.DATABASE_PASSWORD,
-      database: process.env.DATABASE_DB,
-      ssl: {
-        rejectUnauthorized: false,
-      },
-      entities: ['dist/**/*.entity{.ts,.js}'],
-      synchronize: true, // This for development
-      autoLoadEntities: true,
-    })
+    TypeOrmModule.forRoot()
   ],
   controllers: [AppController],
   providers: [AppService],
